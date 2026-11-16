@@ -1,0 +1,764 @@
+// Schéma Prisma — Le Cercle (Phase 1 : socle)
+// Tables : auth (roles, users) + référentiel géographique + référentiels de base.
+// Les tables métier (listings, leads, subscriptions, contracts…) arrivent en phases 2-3.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==========================================================================
+// ENUMS
+// ==========================================================================
+
+enum RoleSlug {
+  SUPER_ADMIN
+  ADMIN
+  AGENCY
+  AGENT
+  PROMOTER
+  OWNER
+  USER
+  ASSISTANT
+}
+
+enum UserStatus {
+  PENDING
+  ACTIVE
+  SUSPENDED
+  BLOCKED
+}
+
+enum CountryStatus {
+  ACTIVE
+  SOON
+  INACTIVE
+}
+
+// ==========================================================================
+// AUTH / RÔLES
+// ==========================================================================
+
+model Role {
+  id          Int      @id @default(autoincrement())
+  slug        RoleSlug @unique
+  name        String
+  description String?
+  permissions Json     @default("[]") // liste de permissions (RBAC granulaire)
+  users       User[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("roles")
+}
+
+model User {
+  id              Int        @id @default(autoincrement())
+  email           String     @unique
+  phone           String?
+  passwordHash    String
+  firstName       String?
+  lastName        String?
+  avatarUrl       String?
+  locale          String     @default("fr") // fr | ar | en | es
+  theme           String     @default("light") // light | dark
+  status          UserStatus @default(PENDING)
+  emailVerifiedAt DateTime?
+  lastLoginAt     DateTime?
+  roleId          Int
+  role            Role       @relation(fields: [roleId], references: [id])
+  countryId       Int?
+  country         Country?   @relation(fields: [countryId], references: [id])
+  listings        Listing[]
+  favorites       Favorite[]
+  agent           Agent?
+  agencies        Agency[]     @relation("AgencyOwner")
+  developers      Developer[]  @relation("DeveloperOwner")
+  messages            Message[]
+  conversationsBuyer  Conversation[] @relation("ConversationBuyer")
+  conversationsPro    Conversation[] @relation("ConversationPro")
+  leadsPro            Lead[]         @relation("LeadPro")
+  leadsContact        Lead[]         @relation("LeadContact")
+  notifications       Notification[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([roleId])
+  @@index([countryId])
+  @@map("users")
+}
+
+// ==========================================================================
+// RÉFÉRENTIEL GÉOGRAPHIQUE (pays → régions → villes → quartiers)
+// ==========================================================================
+
+model Country {
+  id             Int           @id @default(autoincrement())
+  isoCode        String        @unique // MA, TN, SN…
+  name           String
+  slug           String        @unique
+  flagEmoji      String?
+  dialCode       String?       // +212
+  currencyCode   String?       // MAD
+  defaultLocale  String        @default("fr")
+  status         CountryStatus @default(INACTIVE)
+  // Textes de marque par pays (baseline / expression locative) : gérés via Translation (phase 1.F)
+  regions        Region[]
+  cities         City[]
+  users          User[]
+  listings       Listing[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("countries")
+}
+
+model Region {
+  id        Int     @id @default(autoincrement())
+  countryId Int
+  country   Country @relation(fields: [countryId], references: [id])
+  name      String
+  slug      String
+  cities    City[]
+  listings  Listing[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([countryId, slug])
+  @@map("regions")
+}
+
+model City {
+  id           Int            @id @default(autoincrement())
+  regionId     Int
+  region       Region         @relation(fields: [regionId], references: [id])
+  countryId    Int
+  country      Country        @relation(fields: [countryId], references: [id])
+  name         String
+  slug         String
+  lat          Float?
+  lng          Float?         // + extension PostGIS pour les requêtes spatiales
+  neighborhoods Neighborhood[]
+  listings     Listing[]
+  agents       Agent[]
+  agencies     Agency[]
+  developers   Developer[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([countryId, slug])
+  @@index([regionId])
+  @@map("cities")
+}
+
+model Neighborhood {
+  id     Int    @id @default(autoincrement())
+  cityId Int
+  city   City   @relation(fields: [cityId], references: [id])
+  name      String
+  slug      String
+  listings  Listing[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([cityId, slug])
+  @@map("neighborhoods")
+}
+
+// ==========================================================================
+// RÉFÉRENTIELS DE BASE
+// ==========================================================================
+
+model Language {
+  id      Int     @id @default(autoincrement())
+  code    String  @unique // fr, ar, en, es, ber…
+  name    String
+  dir     String  @default("ltr") // ltr | rtl
+  enabled Boolean @default(false)
+
+  @@map("languages")
+}
+
+model Currency {
+  id     Int    @id @default(autoincrement())
+  code   String @unique // MAD, EUR…
+  name   String
+  symbol String
+
+  @@map("currencies")
+}
+
+model Category {
+  id   Int    @id @default(autoincrement())
+  name String
+  slug String @unique
+  icon String? // clé d'icône (sprite.svg)
+  sort Int    @default(0)
+  listings Listing[]
+
+  @@map("categories")
+}
+
+// ==========================================================================
+// TRADUCTIONS (base i18n — phase 1.F)
+// ==========================================================================
+
+model Translation {
+  id       Int    @id @default(autoincrement())
+  lang     String
+  ns       String @default("common") // namespace : common, baseline, seo…
+  key      String
+  value    String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([lang, ns, key])
+  @@map("translations")
+}
+
+// ==========================================================================
+// PHASE 2 — ANNONCES
+// ==========================================================================
+
+enum TransactionType {
+  SALE
+  RENT
+}
+
+enum ListingStatus {
+  DRAFT
+  PENDING
+  PUBLISHED
+  SOLD
+  RENTED
+  PAUSED
+  REJECTED
+  EXPIRED
+}
+
+model Listing {
+  id             Int             @id @default(autoincrement())
+  ref            String          @unique
+  title          String
+  description    String?
+  transaction    TransactionType @default(SALE)
+  price          Decimal         @db.Decimal(14, 2)
+  currencyCode   String          @default("MAD")
+  typeId         Int
+  type           Category        @relation(fields: [typeId], references: [id])
+  countryId      Int
+  country        Country         @relation(fields: [countryId], references: [id])
+  regionId       Int
+  region         Region          @relation(fields: [regionId], references: [id])
+  cityId         Int
+  city           City            @relation(fields: [cityId], references: [id])
+  neighborhoodId Int?
+  neighborhood   Neighborhood?   @relation(fields: [neighborhoodId], references: [id])
+  address        String?
+  lat            Float?
+  lng            Float?
+  surface        Float?
+  landSurface    Float?
+  bedrooms       Int?
+  bathrooms      Int?
+  floors         Int?
+  parking        Boolean         @default(false)
+  elevator       Boolean         @default(false)
+  terrace        Boolean         @default(false)
+  garden         Boolean         @default(false)
+  pool           Boolean         @default(false)
+  seaView        Boolean         @default(false)
+  furnished      Boolean         @default(false)
+  status         ListingStatus   @default(DRAFT)
+  featured       Boolean         @default(false)
+  views          Int             @default(0)
+  videoUrl       String?
+  authorId       Int
+  author         User            @relation(fields: [authorId], references: [id])
+  publishedAt    DateTime?
+  expiresAt      DateTime?
+  images         ListingImage[]
+  features       ListingFeature[]
+  favorites      Favorite[]
+  conversations  Conversation[]
+  leads          Lead[]
+  labels         ListingLabel[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([cityId, status, price])
+  @@index([transaction, status])
+  @@map("listings")
+}
+
+model ListingImage {
+  id        Int     @id @default(autoincrement())
+  listingId Int
+  listing   Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  url       String
+  alt       String?
+  sort      Int     @default(0)
+  isPrimary Boolean @default(false)
+
+  @@map("listing_images")
+}
+
+model Feature {
+  id       Int              @id @default(autoincrement())
+  name     String           @unique
+  unit     String?
+  listings ListingFeature[]
+
+  @@map("features")
+}
+
+model ListingFeature {
+  id        Int     @id @default(autoincrement())
+  listingId Int
+  listing   Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  featureId Int
+  feature   Feature @relation(fields: [featureId], references: [id])
+  value     String
+
+  @@unique([listingId, featureId])
+  @@map("listing_features")
+}
+
+model Favorite {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  listingId Int
+  listing   Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, listingId])
+  @@map("favorites")
+}
+
+// ==========================================================================
+// PHASE 3 — PROFESSIONNELS, CONTRATS, ABONNEMENTS, PAIEMENTS
+// ==========================================================================
+
+enum ProfessionalStatus {
+  RECEIVED
+  CONTRACT_SENT
+  CONTRACT_ACCEPTED
+  PAYMENT_PENDING
+  PAYMENT_RECEIVED
+  VERIFYING
+  ACTIVE
+  REJECTED
+  SUSPENDED
+  EXPIRED
+}
+
+enum ContractType {
+  AGENT
+  AGENCY
+  DEVELOPER
+}
+
+enum ContractStatus {
+  SENT
+  ACCEPTED
+  REJECTED
+  EXPIRED
+}
+
+enum SubscriptionStatus {
+  PENDING_PAYMENT
+  ACTIVE
+  EXPIRED
+  SUSPENDED
+  CANCELLED
+}
+
+enum PaymentMethod {
+  CARD
+  BANK_TRANSFER
+  OTHER
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+  REFUNDED
+}
+
+model Agent {
+  id            Int                @id @default(autoincrement())
+  userId        Int                @unique
+  user          User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  agencyId      Int?
+  agency        Agency?            @relation(fields: [agencyId], references: [id])
+  bio           String?
+  phone         String?
+  whatsapp      String?
+  cityId        Int?
+  city          City?              @relation(fields: [cityId], references: [id])
+  licenseNumber String?
+  status        ProfessionalStatus @default(RECEIVED)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("agents")
+}
+
+model Agency {
+  id          Int                @id @default(autoincrement())
+  ownerId     Int
+  owner       User               @relation("AgencyOwner", fields: [ownerId], references: [id])
+  name        String
+  slug        String             @unique
+  logoUrl     String?
+  coverUrl    String?
+  description String?
+  email       String?
+  phone       String?
+  whatsapp    String?
+  website     String?
+  address     String?
+  cityId      Int?
+  city        City?              @relation(fields: [cityId], references: [id])
+  legalInfo   Json?
+  status      ProfessionalStatus @default(RECEIVED)
+  agents      Agent[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("agencies")
+}
+
+model Developer {
+  id          Int                @id @default(autoincrement())
+  ownerId     Int
+  owner       User               @relation("DeveloperOwner", fields: [ownerId], references: [id])
+  name        String
+  slug        String             @unique
+  logoUrl     String?
+  description String?
+  email       String?
+  phone       String?
+  whatsapp    String?
+  website     String?
+  cityId      Int?
+  city        City?              @relation(fields: [cityId], references: [id])
+  legalInfo   Json?
+  status      ProfessionalStatus @default(RECEIVED)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("developers")
+}
+
+model Contract {
+  id               Int            @id @default(autoincrement())
+  professionalType ContractType
+  professionalId   Int
+  version          String         @default("1.0")
+  content          String?
+  annualPrice      Decimal        @db.Decimal(14, 2)
+  currencyCode     String         @default("MAD")
+  durationMonths   Int            @default(12)
+  status           ContractStatus @default(SENT)
+  sentAt           DateTime?
+  acceptance       ContractAcceptance?
+  subscription     Subscription?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([professionalType, professionalId])
+  @@map("contracts")
+}
+
+model ContractAcceptance {
+  id         Int      @id @default(autoincrement())
+  contractId Int      @unique
+  contract   Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  acceptedAt DateTime @default(now())
+  ip         String?
+  version    String
+
+  @@map("contract_acceptances")
+}
+
+model Subscription {
+  id               Int                @id @default(autoincrement())
+  professionalType ContractType
+  professionalId   Int
+  contractId       Int?               @unique
+  contract         Contract?          @relation(fields: [contractId], references: [id])
+  price            Decimal            @db.Decimal(14, 2)
+  currencyCode     String             @default("MAD")
+  startDate        DateTime?
+  endDate          DateTime?
+  status           SubscriptionStatus @default(PENDING_PAYMENT)
+  payments         Payment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([professionalType, professionalId])
+  @@map("subscriptions")
+}
+
+model Payment {
+  id             Int           @id @default(autoincrement())
+  subscriptionId Int
+  subscription   Subscription  @relation(fields: [subscriptionId], references: [id])
+  amount         Decimal       @db.Decimal(14, 2)
+  currencyCode   String        @default("MAD")
+  reference      String        @unique
+  method         PaymentMethod @default(CARD)
+  status         PaymentStatus @default(PENDING)
+  paidAt         DateTime?
+  invoice        Invoice?
+
+  createdAt DateTime @default(now())
+
+  @@map("payments")
+}
+
+model Invoice {
+  id        Int     @id @default(autoincrement())
+  paymentId Int     @unique
+  payment   Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  number    String  @unique
+  pdfUrl    String?
+  tvaRate   Decimal @db.Decimal(5, 2) @default(20)
+
+  createdAt DateTime @default(now())
+
+  @@map("invoices")
+}
+// ==========================================================================
+// PHASE 4 — COMMUNICATION
+// ==========================================================================
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  INTERESTED
+  VISIT_SCHEDULED
+  NEGOTIATION
+  WON
+  LOST
+}
+
+enum LeadSource {
+  FORM
+  MESSAGE
+  CALL
+  WHATSAPP
+  ALERT
+}
+
+enum NotificationType {
+  INFO
+  MESSAGE
+  LEAD
+  PAYMENT
+  CONTRACT
+  LISTING
+  ALERT
+}
+
+enum CampaignStatus {
+  DRAFT
+  SCHEDULED
+  SENT
+}
+
+model Conversation {
+  id          Int       @id @default(autoincrement())
+  listingId   Int?
+  listing     Listing?  @relation(fields: [listingId], references: [id])
+  buyerUserId Int
+  buyer       User      @relation("ConversationBuyer", fields: [buyerUserId], references: [id])
+  proUserId   Int
+  pro         User      @relation("ConversationPro", fields: [proUserId], references: [id])
+  messages    Message[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("conversations")
+}
+
+model Message {
+  id             Int          @id @default(autoincrement())
+  conversationId Int
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  senderId       Int
+  sender         User         @relation(fields: [senderId], references: [id])
+  body           String
+  readAt         DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([conversationId, createdAt])
+  @@map("messages")
+}
+
+model Lead {
+  id                Int        @id @default(autoincrement())
+  listingId         Int
+  listing           Listing    @relation(fields: [listingId], references: [id])
+  proUserId         Int
+  pro               User       @relation("LeadPro", fields: [proUserId], references: [id])
+  userId            Int?
+  user              User?      @relation("LeadContact", fields: [userId], references: [id])
+  name              String
+  email             String?
+  phone             String?
+  source            LeadSource @default(FORM)
+  status            LeadStatus @default(NEW)
+  notes             String?
+  lastInteractionAt DateTime?
+  events            LeadEvent[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([proUserId, status])
+  @@map("leads")
+}
+
+model LeadEvent {
+  id        Int      @id @default(autoincrement())
+  leadId    Int
+  lead      Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  type      String
+  meta      Json?
+  createdAt DateTime @default(now())
+
+  @@map("lead_events")
+}
+
+model Notification {
+  id        Int              @id @default(autoincrement())
+  userId    Int
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      NotificationType @default(INFO)
+  title     String
+  body      String?
+  data      Json?
+  readAt    DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([userId, readAt])
+  @@map("notifications")
+}
+
+model EmailTemplate {
+  id        Int     @id @default(autoincrement())
+  key       String  @unique
+  name      String
+  subject   String
+  bodyHtml  String?
+  variables Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("email_templates")
+}
+
+model Campaign {
+  id          Int            @id @default(autoincrement())
+  name        String
+  segment     Json?
+  subject     String
+  bodyHtml    String?
+  status      CampaignStatus @default(DRAFT)
+  scheduledAt DateTime?
+  sentAt      DateTime?
+  emails      EmailLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("campaigns")
+}
+
+model EmailLog {
+  id         Int       @id @default(autoincrement())
+  campaignId Int?
+  campaign   Campaign? @relation(fields: [campaignId], references: [id], onDelete: SetNull)
+  to         String
+  subject    String
+  status     String    @default("SENT") // SENT / DELIVERED / OPENED / CLICKED / BOUNCED / COMPLAINT
+  openedAt   DateTime?
+  clickedAt  DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([campaignId])
+  @@map("email_logs")
+}
+
+model Suppression {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  reason    String?
+  createdAt DateTime @default(now())
+
+  @@map("suppressions")
+}
+
+// ==========================================================================
+// PHASE 5 — PARAMÈTRES SANS CODE
+// ==========================================================================
+
+model Setting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+
+  @@map("settings")
+}
+
+// ==========================================================================
+// ÉTIQUETTES (labels multi-sélectionnables sur une annonce)
+// ==========================================================================
+
+model Label {
+  id       Int            @id @default(autoincrement())
+  slug     String         @unique
+  nameFr   String
+  nameAr   String
+  nameEn   String
+  nameEs   String
+  sort     Int            @default(0)
+  listings ListingLabel[]
+}
+
+model ListingLabel {
+  listingId Int
+  labelId   Int
+  listing   Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  label     Label   @relation(fields: [labelId], references: [id], onDelete: Cascade)
+
+  @@id([listingId, labelId])
+  @@map("listing_labels")
+}
+

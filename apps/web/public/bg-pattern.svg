@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+  <!-- Dessins uniques au trait fin, non répétés -->
+  <g stroke="#5b6b7b" stroke-width="1.4" stroke-opacity="0.14" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Maison classique -->
+    <path d="M120 200 200 130l80 70" />
+    <path d="M140 200v90h120v-90" />
+    <path d="M185 290v-45" />
+    <rect x="160" y="235" width="16" height="16" />
+    <rect x="225" y="235" width="16" height="16" />
+
+    <!-- Villa moderne -->
+    <path d="M1520 240h180v110h-180z" />
+    <path d="M1540 260h30v20h-30zM1580 260h30v20h-30zM1620 260h30v20h-30z" />
+    <path d="M1540 300h140" />
+    <rect x="1660" y="290" width="40" height="60" />
+
+    <!-- Immeuble / tour -->
+    <path d="M180 700h150v180h-150z" />
+    <path d="M200 720h110M200 750h110M200 780h110M200 810h110M200 840h110" />
+    <path d="M255 700v180" />
+
+    <!-- Clé -->
+    <circle cx="1500" cy="700" r="34" />
+    <path d="M1524 676 1640 560" />
+    <path d="M1628 572l-14-14M1640 560l14-14" />
+
+    <!-- Grue de chantier -->
+    <path d="M880 120h60v180h-60z" />
+    <path d="M910 120h180" />
+    <path d="M1060 130l30 50" />
+    <path d="M940 120l-30 50" />
+    <path d="M1030 180h60" />
+
+    <!-- Porte -->
+    <path d="M170 940a45 45 0 0 1 90 0v90h-90z" />
+    <path d="M215 985v-20" />
+    <circle cx="230" cy="985" r="3" />
+
+    <!-- Fenêtre avec volets -->
+    <rect x="1590" y="860" width="120" height="140" />
+    <path d="M1650 860v140M1590 930h120" />
+    <path d="M1570 860l20 140M1720 860l-20 140" />
+
+    <!-- Épingle de localisation -->
+    <path d="M900 900c-45 0-75 30-75 70 0 55 75 110 75 110s75-55 75-110c0-40-30-70-75-70Z" />
+    <circle cx="900" cy="970" r="26" />
+
+    <!-- Toit / pignon -->
+    <path d="M520 620l70-70 70 70" />
+    <path d="M545 620v70h90v-70" />
+    <path d="M590 690v-40" />
+
+    <!-- Main de serrage / contrat -->
+    <path d="M1240 900c0-20 16-36 36-36h28v72h-28c-20 0-36-16-36-36Z" />
+    <path d="M1310 900c0-20 16-36 36-36h28v72h-28c-20 0-36-16-36-36Z" />
+  </g>
+</svg>

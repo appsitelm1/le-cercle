@@ -1,0 +1,141 @@
+/* ==========================================================================
+   Le Cercle — design tokens (inspiré Airbnb, SANS ARRONDI)
+   §4.5 du prompt. Mode clair par défaut, mode sombre au choix.
+   ========================================================================== */
+
+:root,
+:root[data-theme="light"] {
+  --bg:           #FFFFFF; /* fond principal */
+  --bg-deep:      #F7F7F7; /* pied de page, zones profondes */
+  --surface:      #FFFFFF; /* cartes, panneaux */
+  --surface-2:    #F7F7F7; /* champs, survols */
+  --surface-3:    #EFEFF2; /* en-têtes de tableau */
+  --border:       #DDDDDD; /* bordures 1 px */
+  --border-soft:  #EBEBEB; /* séparateurs fins */
+  --brand:        #E00B41; /* couleur de marque */
+  --brand-grad:   linear-gradient(90deg, #E61E4D 0%, #E31C5F 50%, #D70466 100%);
+  --brand-hover:  #C2093A;
+  --brand-text:   #C2093A; /* liens / texte de marque sur fond clair (>= 4,5:1) */
+  --brand-bright: #FF385C; /* décor : cœur favori, icônes >= 24px */
+  --indicator:    #E00B41; /* couleur du logo : barres, soulignements, indicateurs */
+  --brand-tint:   #FFF0F3;
+  --on-brand:     #FFFFFF;
+  --text:         #222222;
+  --text-muted:   #6A6A6A;
+  --success:      #00783A;
+  --danger:       #C13515;
+  --warning:      #8A5A00;
+  --info:         #1B6AC9;
+  --whatsapp:     #1FA855;
+  --shadow-1:     0 1px 2px rgba(0,0,0,.08), 0 4px 12px rgba(0,0,0,.08);
+  --shadow-2:     0 2px 4px rgba(0,0,0,.10), 0 8px 24px rgba(0,0,0,.12);
+  --focus:        2px solid #222222;
+  --focus-offset: 2px;
+}
+
+:root[data-theme="dark"] {
+  --bg:           #121212;
+  --bg-deep:      #0B0B0C;
+  --surface:      #1C1C1E;
+  --surface-2:    #262628;
+  --surface-3:    #2C2C2F;
+  --border:       #3A3A3D;
+  --border-soft:  #2C2C2F;
+  --brand:        #E00B41;
+  --brand-grad:   linear-gradient(90deg, #E61E4D 0%, #E31C5F 50%, #D70466 100%);
+  --brand-hover:  #F0234F;
+  --brand-text:   #FF6B87;
+  --brand-bright: #FF385C;
+  --indicator:    #FF385C;
+  --brand-tint:   rgba(255, 56, 92, .14);
+  --on-brand:     #FFFFFF;
+  --text:         #F5F5F5;
+  --text-muted:   #B3B3B8;
+  --success:      #34C47C;
+  --danger:       #FF7A59;
+  --warning:      #F0B54A;
+  --info:         #6CA8F5;
+  --whatsapp:     #1FA855;
+  --shadow-1:     0 0 0 1px #3A3A3D;
+  --shadow-2:     0 0 0 1px #3A3A3D, 0 8px 24px rgba(0,0,0,.5);
+  --focus:        2px solid #F5F5F5;
+  --focus-offset: 2px;
+}
+
+/* ---- reset global : AUCUN arrondi, bibliothèques comprises ---- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  border-radius: 0 !important;
+}
+
+/* ---- typographie ---- */
+:root {
+  --font-sans: 'Figtree', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-arabic: 'Cairo', 'Figtree', sans-serif;
+  --font-mono: ui-monospace, 'Cascadia Code', 'JetBrains Mono', Consolas, 'Courier New', monospace;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* arabe / RTL : police Cairo */
+[dir="rtl"] body,
+html[lang="ar"] body {
+  font-family: var(--font-arabic);
+}
+
+h1, h2, h3, h4 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+h1 { font-size: 30px; }
+h2 { font-size: 20px; }
+h3 { font-size: 17px; }
+h4 { font-size: 15px; }
+
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; }
+img { display: block; max-width: 100%; }
+
+code, pre {
+  font-family: var(--font-mono);
+}
+
+/* ---- focus clavier ---- */
+:focus-visible {
+  outline: var(--focus);
+  outline-offset: var(--focus-offset);
+}
+
+/* ---- micro-interactions : désactivées si reduced-motion ---- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---- sélection ---- */
+::selection {
+  background: var(--brand);
+  color: var(--on-brand);
+}

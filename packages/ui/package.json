@@ -1,0 +1,19 @@
+{
+  "name": "@lecercle/ui",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Design system Le Cercle : tokens, preset Tailwind, logo, icônes",
+  "main": "tailwind-preset.js",
+  "exports": {
+    "./tailwind-preset": "./tailwind-preset.js",
+    "./tokens.css": "./tokens.css",
+    "./sprite.svg": "./icons/sprite.svg",
+    "./logo/*": "./logo/*"
+  },
+  "files": [
+    "tokens.css",
+    "tailwind-preset.js",
+    "logo",
+    "icons"
+  ]
+}

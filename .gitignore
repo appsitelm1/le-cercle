@@ -1,0 +1,35 @@
+# Dépendances
+node_modules/
+.pnpm-store/
+
+# Build
+.next/
+dist/
+out/
+*.tsbuildinfo
+
+# Environnement & secrets
+.env
+.env.local
+.env.production
+.env.*.local
+
+# Base de données
+*.db
+*.sqlite
+
+# Uploads (fichiers médias locaux)
+apps/api/uploads/
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Système
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
