@@ -1,6 +1,7 @@
-FROM node:20-slim
+FROM node:20
 
-RUN corepack enable
+RUN npm install -g pnpm@9.15.4
+
 WORKDIR /app
 
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
