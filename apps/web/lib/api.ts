@@ -11,6 +11,8 @@ export type ListingSummary = {
   surface?: number | null;
   bedrooms?: number | null;
   bathrooms?: number | null;
+  typeId?: number | null;
+  cityId?: number | null;
   city?: { name: string } | null;
   type?: { name: string } | null;
   images?: { url: string; isPrimary: boolean }[];
