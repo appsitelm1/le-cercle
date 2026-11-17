@@ -8,7 +8,6 @@ import { SiteFooter } from '@/components/site-footer';
 import { SiteHeader } from '@/components/site-header';
 import { MobileNav } from '@/components/mobile-nav';
 import { ChatWidget } from '@/components/chat-widget';
-import { BrandBanner } from '@/components/brand-banner';
 import { CurrencyProvider } from '@/lib/currency';
 import '@lecercle/ui/tokens.css';
 import '../globals.css';
@@ -85,7 +84,6 @@ export default async function LocaleLayout({
         <NextIntlClientProvider messages={messages}>
           <CurrencyProvider>
             <SiteHeader />
-            <BrandBanner />
             <div className="pb-16 md:pb-0">{children}</div>
             <SiteFooter locale={locale} />
             <MobileNav />

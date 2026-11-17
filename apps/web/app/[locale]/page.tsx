@@ -4,6 +4,7 @@ import { Icon } from '@/components/icons';
 import { ListingCard } from '@/components/listing-card';
 import { SearchBar } from '@/components/search-bar';
 import { ScrollRow } from '@/components/scroll-row';
+import { BrandBanner } from '@/components/brand-banner';
 
 export default async function HomePage({ params }: { params: { locale: string } }) {
   const t = await getTranslations({ locale: params.locale, namespace: 'home' });
@@ -39,6 +40,8 @@ export default async function HomePage({ params }: { params: { locale: string } 
 
   return (
     <main>
+        <BrandBanner />
+
         {/* HERO */}
         <section className="bg-pattern">
           <div className="relative mx-auto px-4 md:px-6 pt-6 pb-6">

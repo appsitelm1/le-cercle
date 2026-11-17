@@ -81,12 +81,12 @@ export function SiteHeader() {
         LE CERCLE
       </Link>
 
-      <nav className="hidden md:flex gap-0.5 ml-2">
+      <nav className="hidden md:flex gap-0 ml-2">
         {nav.map((n) => (
           <Link
             key={n.label}
             href={`/${locale}${n.href}`}
-            className="relative inline-flex items-center gap-2 px-3 h-10 text-[13.5px] font-semibold text-text-muted hover:text-text group"
+            className="relative inline-flex items-center gap-1.5 px-2 h-10 text-[13.5px] font-semibold text-text-muted hover:text-text whitespace-nowrap group"
           >
             <Icon name={n.icon} size={16} className="text-brand-text transition-transform duration-500 group-hover:rotate-[360deg]" />
             {n.label}
@@ -96,6 +96,15 @@ export function SiteHeader() {
       </nav>
 
       <div className="ml-auto flex items-center gap-1.5">
+        <Link
+          href={me ? `/${locale}/publier` : `/${locale}/connexion`}
+          className="hidden md:inline-flex items-center justify-center w-9 h-9 bg-brand-grad text-onbrand"
+          aria-label={t('publishShort')}
+          title={t('publishShort')}
+        >
+          <Icon name="plus" size={18} />
+        </Link>
+
         <Link href={`/${locale}/favoris`} className="iconbtn hidden md:inline-flex" aria-label={t('favorites')} title={t('favorites')}>
           <Icon name="heart" size={18} />
         </Link>
@@ -217,7 +226,7 @@ export function SiteHeader() {
               <Link href={`/${locale}/favoris`} onClick={() => setOpen(false)} className="flex items-center gap-3 px-3 py-2.5 font-semibold hover:bg-surface-2">
                 <Icon name="heart" size={20} />{t('favorites')}
               </Link>
-              <Link href={`/${locale}/dashboard`} onClick={() => setOpen(false)} className="flex items-center gap-3 px-3 py-2.5 font-semibold hover:bg-surface-2">
+              <Link href={me ? `/${locale}/dashboard` : `/${locale}/connexion`} onClick={() => setOpen(false)} className="flex items-center gap-3 px-3 py-2.5 font-semibold hover:bg-surface-2">
                 <Icon name="user" size={20} />{t('account')}
               </Link>
               {isAdmin && (

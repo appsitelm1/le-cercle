@@ -20,7 +20,7 @@ export function MobileNav() {
     { href: '/recherche?transaction=RENT', icon: 'key', label: t('rent') },
     { href: authed ? '/publier' : '/connexion', icon: 'plus', label: t('publishShort') },
     { href: '/favoris', icon: 'heart', label: t('favorites') },
-    { href: '/dashboard', icon: 'user', label: t('account') },
+    { href: authed ? '/dashboard' : '/connexion', icon: 'user', label: t('account') },
   ];
 
   return (
