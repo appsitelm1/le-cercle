@@ -32,11 +32,13 @@ export function MobileNav() {
             <Link
               key={it.href + it.label}
               href={`/${locale}${it.href}`}
-              className="flex-1 flex flex-col items-center gap-1 pt-0 pb-2 text-[10px] font-semibold relative group"
+              className="flex-1 flex flex-col items-center gap-0.5 py-2 text-[10px] font-semibold relative group"
             >
-              <span className="relative -mt-3 flex items-center justify-center w-14 h-14 rounded-full bg-brand-grad text-onbrand border-[3px] border-surface shadow-[0_5px_14px_rgba(224,11,65,0.4),0_2px_4px_rgba(0,0,0,0.28),inset_0_2px_0_rgba(255,255,255,0.35)] transition-transform duration-300 group-active:scale-90 group-hover:scale-105">
-                <Icon name="plus" size={26} className="drop-shadow-[0_1px_1px_rgba(0,0,0,0.3)]" />
-              </span>
+              <Icon
+                name="housePlus"
+                size={36}
+                className="-mt-2 text-brand-text drop-shadow-[0_2px_3px_rgba(224,11,65,0.45)] transition-transform duration-300 group-active:scale-90"
+              />
               <span className="text-brand-text font-bold">{it.label}</span>
             </Link>
           );

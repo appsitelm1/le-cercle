@@ -8,6 +8,14 @@ const ICONS: Record<string, ReactNode> = {
       <path d="M9.5 20v-6h5v6" />
     </>
   ),
+  housePlus: (
+    <>
+      <path d="M3 10.5 12 3l9 7.5" />
+      <path d="M5 9.5V20h14V9.5" />
+      <path d="M12 11.5v5" />
+      <path d="M9.5 14h5" />
+    </>
+  ),
   home2: (
     <>
       <path d="M3 11 12 4l9 7" />
