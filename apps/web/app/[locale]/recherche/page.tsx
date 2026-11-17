@@ -31,6 +31,7 @@ export default async function RecherchePage({
     surfaceMin: first(searchParams.surfaceMin),
     priceMin: first(searchParams.priceMin),
     priceMax: first(searchParams.priceMax),
+    authorId: first(searchParams.authorId),
     sort: first(searchParams.sort),
     q: first(searchParams.q),
     limit: 24,

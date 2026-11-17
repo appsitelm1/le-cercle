@@ -23,6 +23,7 @@ export class QueryListingsDto {
   @ApiPropertyOptional() @IsOptional() @Type(() => Number) @IsInt() cityId?: number;
   @ApiPropertyOptional() @IsOptional() @Type(() => Number) @IsInt() regionId?: number;
   @ApiPropertyOptional() @IsOptional() @Type(() => Number) @IsInt() countryId?: number;
+  @ApiPropertyOptional({ description: 'Annonces d’un auteur (agent/agence/promoteur) par user id' }) @IsOptional() @Type(() => Number) @IsInt() authorId?: number;
   @ApiPropertyOptional() @IsOptional() @Type(() => Number) @IsInt() neighborhoodId?: number;
 
   @ApiPropertyOptional({ description: 'Plusieurs types (ids séparés par des virgules)' }) @IsOptional() @IsString() typeIds?: string;

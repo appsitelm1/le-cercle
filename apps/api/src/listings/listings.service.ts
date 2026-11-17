@@ -241,6 +241,7 @@ export class ListingsService {
     if (q.cityId) where.cityId = q.cityId;
     if (q.regionId) where.regionId = q.regionId;
     if (q.countryId) where.countryId = q.countryId;
+    if (q.authorId) where.authorId = q.authorId;
     if (q.neighborhoodId) where.neighborhoodId = q.neighborhoodId;
 
     const parseIds = (s?: string) => (s ? s.split(',').map((n) => Number(n)).filter((n) => !Number.isNaN(n)) : []);

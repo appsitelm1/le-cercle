@@ -1,4 +1,5 @@
 import { getTranslations } from 'next-intl/server';
+import Link from 'next/link';
 import { getAgents } from '@/lib/api';
 import { Icon } from '@/components/icons';
 
@@ -12,9 +13,9 @@ export default async function AgentsPage({ params }: { params: { locale: string 
       {agents.length === 0 ? (
         <p className="text-text-muted mt-4">{t('noResults')}</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
           {agents.map((a) => (
-            <div key={a.id} className="border border-border p-4">
+            <div key={a.id} className="border border-border p-4 flex flex-col">
               <div className="aspect-square bg-surface-2 flex items-center justify-center text-text-muted">
                 <Icon name="user" size={48} />
               </div>
@@ -29,6 +30,9 @@ export default async function AgentsPage({ params }: { params: { locale: string 
                   {a.phone}
                 </div>
               )}
+              <Link href={`/${params.locale}/recherche?authorId=${a.user?.id}`} className="mt-3 h-9 w-full flex items-center justify-center border border-border text-sm font-semibold text-text hover:bg-surface-2">
+                {t('viewListings')}
+              </Link>
             </div>
           ))}
         </div>

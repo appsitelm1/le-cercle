@@ -217,7 +217,8 @@
     "agentsTitle": "Agents",
     "agenciesTitle": "Agencies",
     "developersTitle": "Developers",
-    "noResults": "No results."
+    "noResults": "No results.",
+    "viewListings": "View listings"
   },
   "chat": {
     "title": "Le Cercle assistant",

@@ -36,9 +36,9 @@ export function MobileNav() {
             >
               <svg
                 viewBox="0 0 24 24"
-                width={38}
-                height={38}
-                className="-mt-2.5 drop-shadow-[0_4px_6px_rgba(224,11,65,0.5)] transition-transform duration-300 group-active:scale-90"
+                width={48}
+                height={48}
+                className="-mt-4 drop-shadow-[0_4px_6px_rgba(224,11,65,0.5)] transition-transform duration-300 group-active:scale-90"
                 aria-hidden="true"
               >
                 <defs>

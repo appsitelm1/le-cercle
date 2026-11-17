@@ -217,7 +217,8 @@
     "agentsTitle": "Agents",
     "agenciesTitle": "Agences",
     "developersTitle": "Promoteurs",
-    "noResults": "Aucun résultat."
+    "noResults": "Aucun résultat.",
+    "viewListings": "Voir les biens"
   },
   "chat": {
     "title": "Assistant Le Cercle",
