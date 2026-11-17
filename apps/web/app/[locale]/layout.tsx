@@ -85,7 +85,7 @@ export default async function LocaleLayout({
           <CurrencyProvider>
             <SiteHeader />
             <div className="pb-16 md:pb-0">{children}</div>
-            <SiteFooter locale={locale} />
+            <SiteFooter />
             <MobileNav />
             <ChatWidget />
           </CurrencyProvider>

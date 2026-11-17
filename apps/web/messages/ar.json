@@ -297,9 +297,7 @@
     "statusLabel": "الحالة",
     "actions": "إجراءات",
     "label": "وسم",
-    "view": {
-      "view": "عرض"
-    }
+    "view": "عرض"
   },
   "captcha": {
     "title": "تحقق أمني",

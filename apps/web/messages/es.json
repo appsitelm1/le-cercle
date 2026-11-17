@@ -297,9 +297,7 @@
     "statusLabel": "Estado",
     "actions": "Acciones",
     "label": "Etiqueta",
-    "view": {
-      "view": "Ver"
-    }
+    "view": "Ver"
   },
   "captcha": {
     "title": "Verificación de seguridad",

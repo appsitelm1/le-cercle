@@ -297,9 +297,7 @@
     "statusLabel": "Status",
     "actions": "Actions",
     "label": "Label",
-    "view": {
-      "view": "View"
-    }
+    "view": "View"
   },
   "captcha": {
     "title": "Security check",

@@ -297,9 +297,7 @@
     "statusLabel": "Statut",
     "actions": "Actions",
     "label": "Étiquette",
-    "view": {
-      "view": "Voir"
-    }
+    "view": "Voir"
   },
   "captcha": {
     "title": "Vérification de sécurité",

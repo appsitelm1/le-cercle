@@ -1,5 +1,8 @@
+'use client';
+
 import Link from 'next/link';
-import { getTranslations } from 'next-intl/server';
+import { usePathname } from 'next/navigation';
+import { useLocale, useTranslations } from 'next-intl';
 import { LogoMark } from './logo';
 import { Icon } from './icons';
 import { NewsletterForm } from './newsletter-form';
@@ -7,9 +10,69 @@ import { CurrencySelect } from './currency-select';
 
 const LOCALES = ['fr', 'ar', 'en', 'es'] as const;
 
-export async function SiteFooter({ locale }: { locale: string }) {
-  const t = await getTranslations({ locale, namespace: 'nav' });
-  const f = await getTranslations({ locale, namespace: 'footer' });
+export function SiteFooter() {
+  const t = useTranslations('nav');
+  const f = useTranslations('footer');
+  const locale = useLocale();
+  const pathname = usePathname();
+  const compact = (pathname ?? '').includes('/dashboard');
+
+  const legal: [string, string][] = [
+    ['/confidentialite', t('confidentiality')],
+    ['/cookies', t('cookies')],
+    ['/mentions-legales', t('legal')],
+    ['/cgv', t('cgv')],
+  ];
+
+  const bottomBar = (
+    <div className="border-t border-border-soft">
+      <div className="mx-auto px-4 md:px-6 py-4 flex flex-wrap items-center justify-between gap-3">
+        <nav className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-text-muted">
+          {legal.map(([href, label]) => (
+            <Link key={href} href={`/${locale}${href}`} className="hover:text-text">
+              {label}
+            </Link>
+          ))}
+        </nav>
+
+        <div className="flex items-center gap-4">
+          {/* Langue */}
+          <details className="relative">
+            <summary className="inline-flex items-center gap-1 text-[13px] font-semibold list-none cursor-pointer text-text hover:text-brand-text">
+              <Icon name="globe" size={15} />
+              {locale.toUpperCase()}
+              <span className="text-text-muted text-xs">▾</span>
+            </summary>
+            <div className="absolute right-0 bottom-full mb-1 bg-surface border border-border shadow-1 py-1 z-50 min-w-[120px]" dir="ltr">
+              {LOCALES.map((l) => (
+                <Link
+                  key={l}
+                  href={`/${l}`}
+                  className={`block px-3 py-1.5 text-sm ${l === locale ? 'text-brand-text font-semibold' : 'text-text'}`}
+                >
+                  {l.toUpperCase()}
+                </Link>
+              ))}
+            </div>
+          </details>
+
+          {/* Devise */}
+          <CurrencySelect dropUp plain />
+        </div>
+
+        <span className="text-xs text-text-muted">{t('brand')} · © 2026 · {t('rights')}</span>
+      </div>
+    </div>
+  );
+
+  // Sur les tableaux de bord : footer réduit (pas de newsletter, ni de colonnes).
+  if (compact) {
+    return (
+      <footer className="bg-bg-deep border-t border-border-soft pb-16 md:pb-0">
+        {bottomBar}
+      </footer>
+    );
+  }
 
   const links: [string, string][] = [
     ['/recherche?transaction=SALE', t('buy')],
@@ -19,12 +82,6 @@ export async function SiteFooter({ locale }: { locale: string }) {
     ['/promoteurs', t('promoters')],
     ['/a-propos', t('about')],
     ['/contact', t('contact')],
-  ];
-  const legal: [string, string][] = [
-    ['/confidentialite', t('confidentiality')],
-    ['/cookies', t('cookies')],
-    ['/mentions-legales', t('legal')],
-    ['/cgv', t('cgv')],
   ];
   const socials: [string, string][] = [
     ['instagram', 'https://instagram.com'],
@@ -108,45 +165,7 @@ export async function SiteFooter({ locale }: { locale: string }) {
           </div>
         </div>
 
-        {/* Barre basse — légal + langue + devise + copyright */}
-        <div className="border-t border-border-soft">
-          <div className="mx-auto px-4 md:px-6 py-4 flex flex-wrap items-center justify-between gap-3">
-            <nav className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-text-muted">
-              {legal.map(([href, label]) => (
-                <Link key={href} href={`/${locale}${href}`} className="hover:text-text">
-                  {label}
-                </Link>
-              ))}
-            </nav>
-
-            <div className="flex items-center gap-4">
-              {/* Langue */}
-              <details className="relative">
-                <summary className="inline-flex items-center gap-1 text-[13px] font-semibold list-none cursor-pointer text-text hover:text-brand-text">
-                  <Icon name="globe" size={15} />
-                  {locale.toUpperCase()}
-                  <span className="text-text-muted text-xs">▾</span>
-                </summary>
-                <div className="absolute right-0 bottom-full mb-1 bg-surface border border-border shadow-1 py-1 z-50 min-w-[120px]" dir="ltr">
-                  {LOCALES.map((l) => (
-                    <Link
-                      key={l}
-                      href={`/${l}`}
-                      className={`block px-3 py-1.5 text-sm ${l === locale ? 'text-brand-text font-semibold' : 'text-text'}`}
-                    >
-                      {l.toUpperCase()}
-                    </Link>
-                  ))}
-                </div>
-              </details>
-
-              {/* Devise */}
-              <CurrencySelect dropUp plain />
-            </div>
-
-            <span className="text-xs text-text-muted">{t('brand')} · © 2026 · {t('rights')}</span>
-          </div>
-        </div>
+        {bottomBar}
       </footer>
     </>
   );

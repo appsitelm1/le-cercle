@@ -188,7 +188,7 @@ export default function ProprietesPage() {
                         {t('actions')}
                       </summary>
                       <div className="absolute right-0 top-full mt-1 z-30 bg-surface border border-border shadow-1 py-1 min-w-[200px]">
-                        <Link href={`/${locale}/bien/${l.id}`} className={item}>
+                        <Link href={`/${locale}/bien/${l.id}`} target="_blank" rel="noreferrer" className={item}>
                           <Icon name="eye" size={15} /> {t('view')}
                         </Link>
                         <Link href={`/${locale}/publier/${l.id}`} className={item}>
