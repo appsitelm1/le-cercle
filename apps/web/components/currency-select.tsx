@@ -3,7 +3,7 @@
 import { useCurrency, CURRENCIES } from '@/lib/currency';
 import { Icon } from './icons';
 
-export function CurrencySelect({ compact = false, dropUp = false, plain = false }: { compact?: boolean; dropUp?: boolean; plain?: boolean }) {
+export function CurrencySelect({ compact = false, dropUp = false, plain = false, center = false }: { compact?: boolean; dropUp?: boolean; plain?: boolean; center?: boolean }) {
   const { currency, setCurrency } = useCurrency();
 
   return (
@@ -19,7 +19,7 @@ export function CurrencySelect({ compact = false, dropUp = false, plain = false 
         {!compact && <span>{currency.code}</span>}
         <span className="text-text-muted text-xs">▾</span>
       </summary>
-      <div className={`absolute right-0 ${dropUp ? 'bottom-full mb-1' : 'top-full mt-1'} bg-surface border border-border shadow-1 py-1 z-50 min-w-[200px]`} dir="ltr">
+      <div className={`absolute ${center ? 'left-1/2 -translate-x-1/2' : 'right-0'} ${dropUp ? 'bottom-full' : 'top-full'} bg-surface border border-border shadow-1 py-1 z-50 min-w-[200px]`} dir="ltr">
         {CURRENCIES.map((c) => (
           <button
             key={c.code}

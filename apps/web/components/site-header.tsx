@@ -114,7 +114,7 @@ export function SiteHeader() {
             <Icon name="globe" size={16} />
             {locale.toUpperCase()}
           </summary>
-          <div className="absolute right-0 top-full mt-1 bg-surface border border-border shadow-1 py-1 z-50 min-w-[120px]" dir="ltr">
+          <div className="absolute right-0 top-full bg-surface border border-border shadow-1 py-1 z-50 min-w-[120px]" dir="ltr">
             {LOCALES.map((l) => (
               <Link
                 key={l}
@@ -134,7 +134,7 @@ export function SiteHeader() {
           <summary className="iconbtn gap-1 list-none cursor-pointer" aria-label={t('settings')} title={t('settings')}>
             <Icon name="settings" size={18} />
           </summary>
-          <div className="absolute right-0 top-full mt-1 bg-surface border border-border shadow-1 py-1 z-50 min-w-[210px]" dir="ltr">
+          <div className="absolute right-0 top-full bg-surface border border-border shadow-1 py-1 z-50 min-w-[210px]" dir="ltr">
             <button onClick={toggleTheme} className="flex items-center justify-between w-full px-3 py-2 text-sm hover:bg-surface-2">
               <span>{c('theme')}</span>
               <Icon name={dark ? 'sun' : 'moon'} size={16} className="text-brand-text" />
@@ -164,7 +164,7 @@ export function SiteHeader() {
               <span className="hidden md:inline text-[13px] font-semibold max-w-[100px] truncate">{displayName}</span>
               <span className="text-text-muted text-xs">▾</span>
             </summary>
-            <div className="absolute right-0 top-full mt-1 bg-surface border border-border shadow-1 py-1 z-50 min-w-[220px]">
+            <div className="absolute right-0 top-full bg-surface border border-border shadow-1 py-1 z-50 min-w-[220px]">
               <div className="px-3 py-2 border-b border-border-soft">
                 <div className="font-semibold text-sm truncate">{displayName}</div>
                 <div className="text-xs text-text-muted truncate">{me.email}</div>

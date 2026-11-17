@@ -43,7 +43,7 @@ export function SiteFooter() {
               {locale.toUpperCase()}
               <span className="text-text-muted text-xs">▾</span>
             </summary>
-            <div className="absolute right-0 bottom-full mb-1 bg-surface border border-border shadow-1 py-1 z-50 min-w-[120px]" dir="ltr">
+            <div className="absolute left-1/2 -translate-x-1/2 bottom-full bg-surface border border-border shadow-1 py-1 z-50 min-w-[120px]" dir="ltr">
               {LOCALES.map((l) => (
                 <Link
                   key={l}
@@ -57,7 +57,7 @@ export function SiteFooter() {
           </details>
 
           {/* Devise */}
-          <CurrencySelect dropUp plain />
+          <CurrencySelect dropUp plain center />
         </div>
 
         <span className="text-xs text-text-muted">{t('brand')} · © 2026 · {t('rights')}</span>
