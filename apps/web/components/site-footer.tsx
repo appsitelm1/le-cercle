@@ -26,7 +26,7 @@ export function SiteFooter() {
 
   const bottomBar = (
     <div className="border-t border-border-soft">
-      <div className="mx-auto px-4 md:px-6 py-4 flex flex-wrap items-center justify-between gap-3">
+      <div className="mx-auto px-4 md:px-6 py-4 flex flex-col md:flex-row md:flex-wrap items-center justify-center md:justify-between gap-3">
         <nav className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-text-muted">
           {legal.map(([href, label]) => (
             <Link key={href} href={`/${locale}${href}`} className="hover:text-text">
