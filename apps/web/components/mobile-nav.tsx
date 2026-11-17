@@ -34,11 +34,23 @@ export function MobileNav() {
               href={`/${locale}${it.href}`}
               className="flex-1 flex flex-col items-center gap-0.5 py-2 text-[10px] font-semibold relative group"
             >
-              <Icon
-                name="housePlus"
-                size={36}
-                className="-mt-2 text-brand-text drop-shadow-[0_2px_3px_rgba(224,11,65,0.45)] transition-transform duration-300 group-active:scale-90"
-              />
+              <svg
+                viewBox="0 0 24 24"
+                width={38}
+                height={38}
+                className="-mt-2.5 drop-shadow-[0_4px_6px_rgba(224,11,65,0.5)] transition-transform duration-300 group-active:scale-90"
+                aria-hidden="true"
+              >
+                <defs>
+                  <linearGradient id="pubHouse" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stopColor="#f43f5e" />
+                    <stop offset="1" stopColor="#c00b3c" />
+                  </linearGradient>
+                </defs>
+                <path d="M12 3 21 11h-2v9H5v-9H3Z" fill="url(#pubHouse)" />
+                <path d="M12 3 21 11" fill="none" stroke="#fff" strokeOpacity="0.3" strokeWidth="1.2" strokeLinecap="square" />
+                <path d="M12 11.5v5M9.5 14h5" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="square" />
+              </svg>
               <span className="text-brand-text font-bold">{it.label}</span>
             </Link>
           );
