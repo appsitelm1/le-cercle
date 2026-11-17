@@ -31,7 +31,8 @@
   },
   "common": {
     "theme": "المظهر",
-    "language": "اللغة"
+    "language": "اللغة",
+    "currency": "العملة"
   },
   "listings": {
     "all": "الكل",

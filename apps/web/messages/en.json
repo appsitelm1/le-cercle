@@ -31,7 +31,8 @@
   },
   "common": {
     "theme": "Theme",
-    "language": "Language"
+    "language": "Language",
+    "currency": "Currency"
   },
   "listings": {
     "all": "All",

@@ -37,7 +37,7 @@ export function CheckDropdown({
         </span>
         <span className="text-text-muted text-xs">▾</span>
       </summary>
-      <div className="absolute top-full left-0 mt-1 z-40 bg-surface border border-border shadow-1 p-1 min-w-[200px] max-h-64 overflow-auto" dir="ltr">
+      <div className="absolute top-full left-0 mt-1 z-40 bg-surface border border-border shadow-1 p-1 min-w-[200px] max-w-[calc(100vw-2rem)] max-h-64 overflow-auto" dir="ltr">
         {options.map((o) => (
           <label key={o.value} className="flex items-center gap-2 px-2 py-1.5 text-sm cursor-pointer hover:bg-surface-2">
             <input
@@ -80,7 +80,7 @@ export function StepperDropdown({
         </span>
         <span className="text-text-muted text-xs">▾</span>
       </summary>
-      <div className="absolute top-full left-0 mt-1 z-40 bg-surface border border-border shadow-1 p-3 min-w-[170px]" dir="ltr">
+      <div className="absolute top-full left-0 mt-1 z-40 bg-surface border border-border shadow-1 p-3 min-w-[170px] max-w-[calc(100vw-2rem)]" dir="ltr">
         <div className="flex items-center gap-2">
           <button type="button" onClick={() => setAndClose(Math.max(0, value - 1))} className="w-9 h-9 border border-border font-bold text-lg leading-none">−</button>
           <input
@@ -124,7 +124,7 @@ export function PriceDropdown({
         </span>
         <span className="text-text-muted text-xs">▾</span>
       </summary>
-      <div className="absolute top-full left-0 mt-1 z-40 bg-surface border border-border shadow-1 p-4 min-w-[260px]" dir="ltr">
+      <div className="absolute top-full right-0 mt-1 z-40 bg-surface border border-border shadow-1 p-4 min-w-[260px] max-w-[calc(100vw-2rem)]" dir="ltr">
         <div className="flex items-center justify-between text-xs font-semibold">
           <span>Min</span><span className="text-brand-text">{fmt(min) || '—'}</span>
         </div>

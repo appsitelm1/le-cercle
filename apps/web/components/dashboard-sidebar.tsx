@@ -13,10 +13,14 @@ export function DashboardSidebar() {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const role = getUserRole();
     setIsAdmin(role === 'ADMIN' || role === 'SUPER_ADMIN');
+    const mobile = typeof window !== 'undefined' && window.innerWidth < 768;
+    setIsMobile(mobile);
+    if (mobile) setCollapsed(true);
   }, []);
 
   const items = [
@@ -57,6 +61,7 @@ export function DashboardSidebar() {
             <Link
               key={it.label}
               href={it.href}
+              onClick={() => { if (isMobile) setCollapsed(true); }}
               className={`flex items-center gap-3 px-3 h-10 text-sm font-semibold ${
                 active ? 'bg-brand-tint text-brand-text' : 'text-text-muted hover:text-text'
               }`}

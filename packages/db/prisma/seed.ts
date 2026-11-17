@@ -57,6 +57,13 @@ const CURRENCIES = [
   { code: 'XAF', name: 'Franc CFA (CEMAC)', symbol: 'FCFA' },
   { code: 'EGP', name: 'Livre égyptienne', symbol: 'E£' },
   { code: 'ZAR', name: 'Rand sud-africain', symbol: 'R' },
+  { code: 'CHF', name: 'Franc suisse', symbol: 'CHF' },
+  { code: 'GBP', name: 'Livre sterling', symbol: '£' },
+  { code: 'AED', name: 'Dirham des Émirats', symbol: 'AED' },
+  { code: 'SAR', name: 'Riyal saoudien', symbol: 'SAR' },
+  { code: 'QAR', name: 'Riyal qatari', symbol: 'QAR' },
+  { code: 'KWD', name: 'Dinar koweïtien', symbol: 'KWD' },
+  { code: 'JOD', name: 'Dinar jordanien', symbol: 'JOD' },
 ];
 
 const CATEGORIES = [
@@ -99,6 +106,46 @@ const COUNTRIES: CountrySeed[] = [
   { iso: 'MG', name: 'Madagascar', dial: '+261', currency: 'MGA', locales: 'fr,mg' },
   { iso: 'MU', name: 'Maurice', dial: '+230', currency: 'MUR', locales: 'fr,en' },
 ];
+
+// Pays supplémentaires (Europe + Monde arabe) — §9.1 étendu
+const EXTRA_COUNTRIES: CountrySeed[] = [
+  { iso: 'FR', name: 'France', dial: '+33', currency: 'EUR', locales: 'fr' },
+  { iso: 'ES', name: 'Espagne', dial: '+34', currency: 'EUR', locales: 'es' },
+  { iso: 'CH', name: 'Suisse', dial: '+41', currency: 'CHF', locales: 'fr,de,it' },
+  { iso: 'BE', name: 'Belgique', dial: '+32', currency: 'EUR', locales: 'fr,nl' },
+  { iso: 'PT', name: 'Portugal', dial: '+351', currency: 'EUR', locales: 'pt' },
+  { iso: 'IT', name: 'Italie', dial: '+39', currency: 'EUR', locales: 'it' },
+  { iso: 'DE', name: 'Allemagne', dial: '+49', currency: 'EUR', locales: 'de' },
+  { iso: 'GB', name: 'Royaume-Uni', dial: '+44', currency: 'GBP', locales: 'en' },
+  { iso: 'AE', name: 'Émirats Arabes Unis', dial: '+971', currency: 'AED', locales: 'ar,en' },
+  { iso: 'SA', name: 'Arabie Saoudite', dial: '+966', currency: 'SAR', locales: 'ar' },
+  { iso: 'QA', name: 'Qatar', dial: '+974', currency: 'QAR', locales: 'ar,en' },
+  { iso: 'KW', name: 'Koweït', dial: '+965', currency: 'KWD', locales: 'ar' },
+  { iso: 'JO', name: 'Jordanie', dial: '+962', currency: 'JOD', locales: 'ar' },
+];
+
+// ISO des pays marqués ACTIFS (affichés dans la recherche)
+const ACTIVE_ISOS = new Set(['MA', 'DZ', 'TN', 'FR', 'ES', 'CH', 'BE', 'PT', 'IT', 'DE', 'GB', 'AE', 'SA', 'QA', 'KW', 'JO', 'EG']);
+
+// Villes par pays (hors Maroc, géré séparément)
+const COUNTRY_CITIES: Record<string, string[]> = {
+  DZ: ['Alger', 'Oran', 'Constantine', 'Annaba'],
+  TN: ['Tunis', 'Sousse', 'Hammamet', 'Djerba'],
+  FR: ['Paris', 'Lyon', 'Marseille', 'Nice', 'Bordeaux', 'Cannes'],
+  ES: ['Madrid', 'Barcelone', 'Marbella', 'Malaga', 'Valence', 'Ibiza'],
+  CH: ['Genève', 'Zurich', 'Lausanne', 'Bâle', 'Montreux'],
+  BE: ['Bruxelles', 'Anvers'],
+  PT: ['Lisbonne', 'Porto', 'Faro'],
+  IT: ['Milan', 'Rome', 'Turin'],
+  DE: ['Berlin', 'Munich', 'Francfort', 'Düsseldorf'],
+  GB: ['Londres', 'Manchester'],
+  AE: ['Dubaï', 'Abou Dabi', 'Charjah', 'Ajman'],
+  SA: ['Riyad', 'Djeddah', 'La Mecque', 'Médine', 'Dammam'],
+  QA: ['Doha'],
+  KW: ['Koweït City'],
+  JO: ['Amman'],
+  EG: ['Le Caire', 'Alexandrie', 'Charm el-Cheikh', 'Hurghada'],
+};
 
 const REGIONS_MAROC = [
   'Tanger-Tétouan-Al Hoceïma', "L'Oriental", 'Fès-Meknès', 'Rabat-Salé-Kénitra',
@@ -185,12 +232,13 @@ async function main() {
     update: { status: CountryStatus.ACTIVE },
     create: { isoCode: 'MA', name: 'Maroc', slug: 'maroc', flagEmoji: '🇲🇦', dialCode: '+212', currencyCode: 'MAD', defaultLocale: 'fr', status: CountryStatus.ACTIVE },
   });
-  for (const c of COUNTRIES) {
+  for (const c of [...COUNTRIES, ...EXTRA_COUNTRIES]) {
     if (c.iso === 'MA') continue;
+    const status = ACTIVE_ISOS.has(c.iso) ? CountryStatus.ACTIVE : CountryStatus.INACTIVE;
     await prisma.country.upsert({
       where: { isoCode: c.iso },
-      update: { status: CountryStatus.INACTIVE },
-      create: { isoCode: c.iso, name: c.name, slug: slugify(c.name), flagEmoji: flagEmoji(c.iso), dialCode: c.dial, currencyCode: c.currency, defaultLocale: c.locales.split(',')[0], status: CountryStatus.INACTIVE },
+      update: { status, name: c.name, dialCode: c.dial, currencyCode: c.currency, defaultLocale: c.locales.split(',')[0], flagEmoji: flagEmoji(c.iso) },
+      create: { isoCode: c.iso, name: c.name, slug: slugify(c.name), flagEmoji: flagEmoji(c.iso), dialCode: c.dial, currencyCode: c.currency, defaultLocale: c.locales.split(',')[0], status },
     });
   }
   // Régions + villes + quartiers (Maroc)
@@ -230,6 +278,30 @@ async function main() {
       create: { cityId: cityId.get(city) ?? 0, name: 'Centre-ville', slug: 'centre-ville' },
     });
   }
+
+  // Villes + quartiers des pays supplémentaires (Maghreb, Europe, monde arabe)
+  for (const [iso, cities] of Object.entries(COUNTRY_CITIES)) {
+    const country = await prisma.country.findUnique({ where: { isoCode: iso } });
+    if (!country) continue;
+    const region = await prisma.region.upsert({
+      where: { countryId_slug: { countryId: country.id, slug: 'region-principale' } },
+      update: {},
+      create: { countryId: country.id, name: 'Région principale', slug: 'region-principale' },
+    });
+    for (const cityName of cities) {
+      const city = await prisma.city.upsert({
+        where: { countryId_slug: { countryId: country.id, slug: slugify(cityName) } },
+        update: { regionId: region.id },
+        create: { countryId: country.id, regionId: region.id, name: cityName, slug: slugify(cityName) },
+      });
+      await prisma.neighborhood.upsert({
+        where: { cityId_slug: { cityId: city.id, slug: 'centre-ville' } },
+        update: {},
+        create: { cityId: city.id, name: 'Centre-ville', slug: 'centre-ville' },
+      });
+    }
+  }
+
   // Traductions de marque
   for (const t of BRAND_TRANSLATIONS) {
     await prisma.translation.upsert({

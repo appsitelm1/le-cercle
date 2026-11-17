@@ -3,12 +3,18 @@
 import { useCurrency, CURRENCIES } from '@/lib/currency';
 import { Icon } from './icons';
 
-export function CurrencySelect({ compact = false, dropUp = false }: { compact?: boolean; dropUp?: boolean }) {
+export function CurrencySelect({ compact = false, dropUp = false, plain = false }: { compact?: boolean; dropUp?: boolean; plain?: boolean }) {
   const { currency, setCurrency } = useCurrency();
 
   return (
     <details className="relative" onMouseLeave={(e) => e.currentTarget.removeAttribute('open')}>
-      <summary className="iconbtn gap-1 text-[13px] font-semibold list-none cursor-pointer">
+      <summary
+        className={`${
+          plain
+            ? 'inline-flex items-center gap-1 text-[13px] font-semibold text-text hover:text-brand-text'
+            : 'iconbtn'
+        } gap-1 text-[13px] font-semibold list-none cursor-pointer`}
+      >
         <Icon name="banknote" size={16} />
         {!compact && <span>{currency.code}</span>}
         <span className="text-text-muted text-xs">▾</span>

@@ -119,10 +119,10 @@ export async function SiteFooter({ locale }: { locale: string }) {
               ))}
             </nav>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-4">
               {/* Langue */}
               <details className="relative">
-                <summary className="iconbtn gap-1 text-[13px] font-semibold list-none cursor-pointer h-8">
+                <summary className="inline-flex items-center gap-1 text-[13px] font-semibold list-none cursor-pointer text-text hover:text-brand-text">
                   <Icon name="globe" size={15} />
                   {locale.toUpperCase()}
                   <span className="text-text-muted text-xs">▾</span>
@@ -132,7 +132,7 @@ export async function SiteFooter({ locale }: { locale: string }) {
                     <Link
                       key={l}
                       href={`/${l}`}
-                      className={`block px-3 py-1.5 text-sm hover:bg-surface-2 ${l === locale ? 'text-brand-text font-semibold' : 'text-text'}`}
+                      className={`block px-3 py-1.5 text-sm ${l === locale ? 'text-brand-text font-semibold' : 'text-text'}`}
                     >
                       {l.toUpperCase()}
                     </Link>
@@ -141,7 +141,7 @@ export async function SiteFooter({ locale }: { locale: string }) {
               </details>
 
               {/* Devise */}
-              <CurrencySelect dropUp />
+              <CurrencySelect dropUp plain />
             </div>
 
             <span className="text-xs text-text-muted">{t('brand')} · © 2026 · {t('rights')}</span>

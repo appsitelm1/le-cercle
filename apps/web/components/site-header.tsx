@@ -7,7 +7,7 @@ import { getAuth } from '@/lib/api';
 import { clearToken, getToken, getUserRole } from '@/lib/auth';
 import { Icon } from './icons';
 import { LogoMark } from './logo';
-import { CurrencySelect } from './currency-select';
+import { CURRENCIES, useCurrency } from '@/lib/currency';
 
 const LOCALES = ['fr', 'ar', 'en', 'es'] as const;
 
@@ -18,6 +18,7 @@ export function SiteHeader() {
   const [dark, setDark] = useState(false);
   const [open, setOpen] = useState(false);
   const [me, setMe] = useState<any>(null);
+  const { currency, setCurrency } = useCurrency();
 
   useEffect(() => {
     setDark(document.documentElement.getAttribute('data-theme') === 'dark');
@@ -95,7 +96,7 @@ export function SiteHeader() {
       </nav>
 
       <div className="ml-auto flex items-center gap-1.5">
-        <Link href={`/${locale}/favoris`} className="iconbtn" aria-label={t('favorites')} title={t('favorites')}>
+        <Link href={`/${locale}/favoris`} className="iconbtn hidden md:inline-flex" aria-label={t('favorites')} title={t('favorites')}>
           <Icon name="heart" size={18} />
         </Link>
 
@@ -119,11 +120,32 @@ export function SiteHeader() {
           </div>
         </details>
 
-        <button className="iconbtn" onClick={toggleTheme} aria-label={c('theme')} title={c('theme')}>
-          <Icon name={dark ? 'sun' : 'moon'} size={18} />
-        </button>
-
-        <CurrencySelect compact />
+        {/* Réglages : thème + devise */}
+        <details className="relative" onMouseLeave={(e) => e.currentTarget.removeAttribute('open')}>
+          <summary className="iconbtn gap-1 list-none cursor-pointer" aria-label={t('settings')} title={t('settings')}>
+            <Icon name="settings" size={18} />
+          </summary>
+          <div className="absolute right-0 top-full mt-1 bg-surface border border-border shadow-1 py-1 z-50 min-w-[210px]" dir="ltr">
+            <button onClick={toggleTheme} className="flex items-center justify-between w-full px-3 py-2 text-sm hover:bg-surface-2">
+              <span>{c('theme')}</span>
+              <Icon name={dark ? 'sun' : 'moon'} size={16} className="text-brand-text" />
+            </button>
+            <div className="border-t border-border-soft my-1" />
+            <div className="px-3 py-1 text-xs text-text-muted">{c('currency')}</div>
+            {CURRENCIES.map((cur) => (
+              <button
+                key={cur.code}
+                onClick={() => setCurrency(cur)}
+                className={`flex items-center justify-between w-full px-3 py-1.5 text-sm hover:bg-surface-2 ${
+                  cur.code === currency.code ? 'text-brand-text font-semibold' : 'text-text'
+                }`}
+              >
+                <span>{cur.label}</span>
+                {cur.code === currency.code && <span>✓</span>}
+              </button>
+            ))}
+          </div>
+        </details>
 
         {me ? (
           <details className="relative" onMouseLeave={(e) => e.currentTarget.removeAttribute('open')}>
@@ -185,9 +207,9 @@ export function SiteHeader() {
                   key={n.label}
                   href={`/${locale}${n.href}`}
                   onClick={() => setOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2.5 font-semibold text-text hover:bg-surface-2"
+                  className="flex items-center gap-3 px-3 py-2.5 font-semibold text-text hover:bg-surface-2 group"
                 >
-                  <Icon name={n.icon} size={20} />
+                  <Icon name={n.icon} size={20} className="text-brand-text transition-transform duration-500 group-hover:rotate-[360deg]" />
                   {n.label}
                 </Link>
               ))}

@@ -31,7 +31,8 @@
   },
   "common": {
     "theme": "Thème",
-    "language": "Langue"
+    "language": "Langue",
+    "currency": "Devise"
   },
   "listings": {
     "all": "Tous",
