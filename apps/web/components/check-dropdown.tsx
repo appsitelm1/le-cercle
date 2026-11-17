@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 function useDropdown() {
   const detailsRef = useRef<HTMLDetailsElement>(null);
@@ -47,6 +48,9 @@ export function CheckDropdown({
   onToggle: (value: string) => void;
 }) {
   const { detailsRef, panelRef, flip } = useDropdown();
+  const c = useTranslations('common');
+  const [q, setQ] = useState('');
+  const filtered = options.filter((o) => o.name.toLowerCase().includes(q.trim().toLowerCase()));
   return (
     <details ref={detailsRef} className="relative group flex-1 min-w-[140px]">
       <summary className="h-12 px-3 flex items-center justify-between gap-1 cursor-pointer list-none text-sm border-r border-border-soft bg-surface">
@@ -56,19 +60,28 @@ export function CheckDropdown({
         </span>
         <span className="text-text-muted text-xs">▾</span>
       </summary>
-      <div ref={panelRef} className={`absolute top-full ${flip ? 'right-0' : 'left-0'} mt-1 z-40 bg-surface border border-border shadow-1 p-1 min-w-[200px] max-w-[calc(100vw-2rem)] max-h-64 overflow-auto`} dir="ltr">
-        {options.map((o) => (
-          <label key={o.value} className="flex items-center gap-2 px-2 py-1.5 text-sm cursor-pointer hover:bg-surface-2">
-            <input
-              type="checkbox"
-              checked={selected.includes(o.value)}
-              onChange={() => onToggle(o.value)}
-              className="w-4 h-4"
-            />
-            <span className="truncate">{o.name}</span>
-          </label>
-        ))}
-        {options.length === 0 && <p className="px-2 py-1.5 text-xs text-text-muted">—</p>}
+      <div ref={panelRef} className={`absolute top-full ${flip ? 'right-0' : 'left-0'} mt-1 z-40 bg-surface border border-border shadow-1 p-1 min-w-[220px] max-w-[calc(100vw-2rem)]`} dir="ltr">
+        <input
+          type="text"
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder={c('searchPlaceholder')}
+          className="w-full h-9 px-2 border border-border bg-surface text-sm mb-1"
+        />
+        <div className="max-h-56 overflow-auto">
+          {filtered.map((o) => (
+            <label key={o.value} className="flex items-center gap-2 px-2 py-1.5 text-sm cursor-pointer hover:bg-surface-2">
+              <input
+                type="checkbox"
+                checked={selected.includes(o.value)}
+                onChange={() => onToggle(o.value)}
+                className="w-4 h-4"
+              />
+              <span className="truncate">{o.name}</span>
+            </label>
+          ))}
+          {filtered.length === 0 && <p className="px-2 py-1.5 text-xs text-text-muted">—</p>}
+        </div>
       </div>
     </details>
   );

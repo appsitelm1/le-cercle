@@ -32,7 +32,8 @@
   "common": {
     "theme": "Theme",
     "language": "Language",
-    "currency": "Currency"
+    "currency": "Currency",
+    "searchPlaceholder": "Search…"
   },
   "listings": {
     "all": "All",
@@ -218,7 +219,8 @@
     "agenciesTitle": "Agencies",
     "developersTitle": "Developers",
     "noResults": "No results.",
-    "viewListings": "View listings"
+    "viewListings": "View listings",
+    "searchAgent": "Search an agent…"
   },
   "chat": {
     "title": "Le Cercle assistant",

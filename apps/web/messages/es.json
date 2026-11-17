@@ -32,7 +32,8 @@
   "common": {
     "theme": "Tema",
     "language": "Idioma",
-    "currency": "Moneda"
+    "currency": "Moneda",
+    "searchPlaceholder": "Buscar…"
   },
   "listings": {
     "all": "Todos",
@@ -218,7 +219,8 @@
     "agenciesTitle": "Agencias",
     "developersTitle": "Promotores",
     "noResults": "Sin resultados.",
-    "viewListings": "Ver propiedades"
+    "viewListings": "Ver propiedades",
+    "searchAgent": "Buscar un agente…"
   },
   "chat": {
     "title": "Asistente Le Cercle",

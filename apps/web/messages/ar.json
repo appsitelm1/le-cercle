@@ -32,7 +32,8 @@
   "common": {
     "theme": "المظهر",
     "language": "اللغة",
-    "currency": "العملة"
+    "currency": "العملة",
+    "searchPlaceholder": "بحث…"
   },
   "listings": {
     "all": "الكل",
@@ -218,7 +219,8 @@
     "agenciesTitle": "وكالات",
     "developersTitle": "مطوّرون",
     "noResults": "لا نتائج.",
-    "viewListings": "عرض العقارات"
+    "viewListings": "عرض العقارات",
+    "searchAgent": "ابحث عن وكيل…"
   },
   "chat": {
     "title": "مساعد Le Cercle",
