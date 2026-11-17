@@ -22,9 +22,9 @@ export default async function AgenciesPage({ params }: { params: { locale: strin
                 <div className="font-bold">{a.name}</div>
                 {a.city?.name && <div className="text-sm text-text-muted flex items-center gap-1"><Icon name="pin" size={13} />{a.city.name}</div>}
                 {a.description && <div className="text-sm text-text-muted mt-1">{a.description}</div>}
-                <div className="text-sm mt-2 flex items-center gap-3">
-                  {a.phone && <span className="flex items-center gap-1 text-brand-text"><Icon name="phone" size={14} />{a.phone}</span>}
-                  {a.email && <span className="flex items-center gap-1 text-brand-text"><Icon name="mail" size={14} />{a.email}</span>}
+                <div className="text-sm mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
+                  {a.phone && <span className="flex items-center gap-1 text-brand-text whitespace-nowrap"><Icon name="phone" size={14} />{a.phone}</span>}
+                  {a.email && <span className="flex items-center gap-1 text-brand-text whitespace-nowrap"><Icon name="mail" size={14} />{a.email}</span>}
                 </div>
               </div>
             </div>

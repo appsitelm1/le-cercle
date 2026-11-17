@@ -52,7 +52,7 @@ export async function SiteFooter({ locale }: { locale: string }) {
       </section>
 
       {/* Footer principal */}
-      <footer className="bg-bg-deep border-t border-border-soft">
+      <footer className="bg-bg-deep border-t border-border-soft pb-16 md:pb-0">
         <div className="mx-auto px-4 md:px-6 py-10 grid md:grid-cols-3 gap-8">
           {/* Colonne 1 — marque */}
           <div>

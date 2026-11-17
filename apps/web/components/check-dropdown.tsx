@@ -1,19 +1,38 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-function useOutsideClose() {
-  const ref = useRef<HTMLDetailsElement>(null);
+function useDropdown() {
+  const detailsRef = useRef<HTMLDetailsElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const [flip, setFlip] = useState(false);
+
   useEffect(() => {
-    function onDoc(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
-        ref.current.removeAttribute('open');
+    const el = detailsRef.current;
+    if (!el) return;
+    const onDoc = (e: MouseEvent) => {
+      if (!el.contains(e.target as Node)) {
+        el.removeAttribute('open');
       }
-    }
+    };
+    const onToggle = () => {
+      if (!el.open) return;
+      requestAnimationFrame(() => {
+        const panel = panelRef.current;
+        if (!panel) return;
+        const r = panel.getBoundingClientRect();
+        setFlip(r.right > window.innerWidth - 8);
+      });
+    };
     document.addEventListener('click', onDoc);
-    return () => document.removeEventListener('click', onDoc);
+    el.addEventListener('toggle', onToggle);
+    return () => {
+      document.removeEventListener('click', onDoc);
+      el.removeEventListener('toggle', onToggle);
+    };
   }, []);
-  return ref;
+
+  return { detailsRef, panelRef, flip };
 }
 
 export function CheckDropdown({
@@ -27,9 +46,9 @@ export function CheckDropdown({
   selected: string[];
   onToggle: (value: string) => void;
 }) {
-  const ref = useOutsideClose();
+  const { detailsRef, panelRef, flip } = useDropdown();
   return (
-    <details ref={ref} className="relative group flex-1 min-w-[140px]">
+    <details ref={detailsRef} className="relative group flex-1 min-w-[140px]">
       <summary className="h-12 px-3 flex items-center justify-between gap-1 cursor-pointer list-none text-sm border-r border-border-soft bg-surface">
         <span className="truncate">
           {label}
@@ -37,7 +56,7 @@ export function CheckDropdown({
         </span>
         <span className="text-text-muted text-xs">▾</span>
       </summary>
-      <div className="absolute top-full left-0 mt-1 z-40 bg-surface border border-border shadow-1 p-1 min-w-[200px] max-w-[calc(100vw-2rem)] max-h-64 overflow-auto" dir="ltr">
+      <div ref={panelRef} className={`absolute top-full ${flip ? 'right-0' : 'left-0'} mt-1 z-40 bg-surface border border-border shadow-1 p-1 min-w-[200px] max-w-[calc(100vw-2rem)] max-h-64 overflow-auto`} dir="ltr">
         {options.map((o) => (
           <label key={o.value} className="flex items-center gap-2 px-2 py-1.5 text-sm cursor-pointer hover:bg-surface-2">
             <input
@@ -66,13 +85,13 @@ export function StepperDropdown({
   suffix?: string;
   onChange: (v: number) => void;
 }) {
-  const ref = useOutsideClose();
+  const { detailsRef, panelRef, flip } = useDropdown();
   function setAndClose(v: number) {
     onChange(v);
-    ref.current?.removeAttribute('open');
+    detailsRef.current?.removeAttribute('open');
   }
   return (
-    <details ref={ref} className="relative flex-none w-[120px]">
+    <details ref={detailsRef} className="relative flex-none w-[120px]">
       <summary className="h-12 px-3 flex items-center justify-between gap-1 cursor-pointer list-none text-sm border-r border-border-soft bg-surface">
         <span className="truncate">
           {label}
@@ -80,7 +99,7 @@ export function StepperDropdown({
         </span>
         <span className="text-text-muted text-xs">▾</span>
       </summary>
-      <div className="absolute top-full left-0 mt-1 z-40 bg-surface border border-border shadow-1 p-3 min-w-[170px] max-w-[calc(100vw-2rem)]" dir="ltr">
+      <div ref={panelRef} className={`absolute top-full ${flip ? 'right-0' : 'left-0'} mt-1 z-40 bg-surface border border-border shadow-1 p-3 min-w-[170px] max-w-[calc(100vw-2rem)]`} dir="ltr">
         <div className="flex items-center gap-2">
           <button type="button" onClick={() => setAndClose(Math.max(0, value - 1))} className="w-9 h-9 border border-border font-bold text-lg leading-none">−</button>
           <input
@@ -114,9 +133,9 @@ export function PriceDropdown({
   max: number;
   onChange: (min: number, max: number) => void;
 }) {
-  const ref = useOutsideClose();
+  const { detailsRef, panelRef } = useDropdown();
   return (
-    <details ref={ref} className="relative group flex-1 min-w-[150px]">
+    <details ref={detailsRef} className="relative group flex-1 min-w-[150px]">
       <summary className="h-12 px-3 flex items-center justify-between gap-1 cursor-pointer list-none text-sm border-r border-border-soft bg-surface">
         <span className="truncate">
           {label}
@@ -124,7 +143,7 @@ export function PriceDropdown({
         </span>
         <span className="text-text-muted text-xs">▾</span>
       </summary>
-      <div className="absolute top-full right-0 mt-1 z-40 bg-surface border border-border shadow-1 p-4 min-w-[260px] max-w-[calc(100vw-2rem)]" dir="ltr">
+      <div ref={panelRef} className="absolute top-full right-0 mt-1 z-40 bg-surface border border-border shadow-1 p-4 min-w-[260px] max-w-[calc(100vw-2rem)]" dir="ltr">
         <div className="flex items-center justify-between text-xs font-semibold">
           <span>Min</span><span className="text-brand-text">{fmt(min) || '—'}</span>
         </div>

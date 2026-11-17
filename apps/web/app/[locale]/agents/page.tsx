@@ -24,7 +24,7 @@ export default async function AgentsPage({ params }: { params: { locale: string 
               {a.city?.name && <div className="text-sm text-text-muted mt-0.5 flex items-center gap-1"><Icon name="pin" size={13} />{a.city.name}</div>}
               {a.bio && <div className="text-sm text-text-muted mt-2">{a.bio}</div>}
               {a.phone && (
-                <div className="text-sm mt-2 flex items-center gap-2 text-brand-text">
+                <div className="text-sm mt-2 flex items-center gap-2 text-brand-text whitespace-nowrap">
                   <Icon name="phone" size={14} />
                   {a.phone}
                 </div>

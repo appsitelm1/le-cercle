@@ -22,9 +22,9 @@ export default async function PromoteursPage({ params }: { params: { locale: str
                 <div className="font-bold">{d.name}</div>
                 {d.city?.name && <div className="text-sm text-text-muted flex items-center gap-1"><Icon name="pin" size={13} />{d.city.name}</div>}
                 {d.description && <div className="text-sm text-text-muted mt-1">{d.description}</div>}
-                <div className="text-sm mt-2 flex items-center gap-3">
-                  {d.phone && <span className="flex items-center gap-1 text-brand-text"><Icon name="phone" size={14} />{d.phone}</span>}
-                  {d.email && <span className="flex items-center gap-1 text-brand-text"><Icon name="mail" size={14} />{d.email}</span>}
+                <div className="text-sm mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
+                  {d.phone && <span className="flex items-center gap-1 text-brand-text whitespace-nowrap"><Icon name="phone" size={14} />{d.phone}</span>}
+                  {d.email && <span className="flex items-center gap-1 text-brand-text whitespace-nowrap"><Icon name="mail" size={14} />{d.email}</span>}
                 </div>
               </div>
             </div>
